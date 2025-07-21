@@ -8,16 +8,9 @@ from .models import Library
 
 # Create your views here.
 def list_books(request):
-    books = Book.objects.select_related('author').all()
+    books = Book.objects.all()
 
-    if not books:
-        return HttpResponse("No books found.")
-
-    output_lines = ["List of Books:\n"]
-    for book in books:
-        output_lines.append(f"- {book.title} by {book.author.name}")
-
-    return HttpResponse("\n".join(output_lines), content_type="text/plain")
+    return render(request, 'relationship_app/list_books.html', {'books': books})
 
 class LibraryDetailView(DetailView):
     model = Library

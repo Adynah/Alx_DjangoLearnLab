@@ -4,6 +4,11 @@ from .models import Book
 from django.views.generic.detail import DetailView
 from django.shortcuts import get_object_or_404
 from .models import Library
+from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import CreateView
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
 
 
 # Create your views here.
@@ -21,3 +26,24 @@ class LibraryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['books'] = self.object.books.all()
         return context
+
+# Login view
+class UserLoginView(LoginView):
+    template_name = 'relationship_app/login.html'
+
+# Logout view
+class UserLogoutView(LogoutView):
+    template_name = 'relationship_app/logout.html'
+
+# Register view
+class UserRegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'relationship_app/register.html'
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
+
+def home(request):
+    return render(request, 'relationship_app/home.html')

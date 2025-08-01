@@ -2,12 +2,13 @@ from django.contrib import admin
 from .models import Book
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from django.contrib.auth.models import Group, Permission
 
 
 # Custom admin class
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'publication_year')
-    list_filter = ('author', 'publication_year')
+    list_display = ('title', 'author', 'published_date')
+    list_filter = ('author', 'published_date')
     search_fields = ('title', 'author')  
 
 
@@ -29,8 +30,5 @@ class CustomUserAdmin(UserAdmin):
 
 
 # Register your models here.
-admin.site.register(Book)
+admin.site.register(Book, BookAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
-
-
-class ModelAdmin(a)

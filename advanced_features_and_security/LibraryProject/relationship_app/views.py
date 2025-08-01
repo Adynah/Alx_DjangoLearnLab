@@ -13,6 +13,7 @@ from django.shortcuts import redirect
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from .forms import BookForm
 
 
@@ -21,6 +22,13 @@ def list_books(request):
     books = Book.objects.all()
 
     return render(request, 'relationship_app/list_books.html', {'books': books})
+
+class AddBookView(PermissionRequiredMixin, CreateView):
+    model = Book
+    form_class = BookForm
+    template_name = 'relationship_app/book_form.html'
+    success_url = reverse_lazy('list_books')
+    permission_required = 'relationship_app.can_add_book'
 
 class LibraryDetailView(DetailView):
     model = Library

@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'bookshelf',
-    'relationship_app'
-    'bookshelf.CustomUser'
+    'relationship_app',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +127,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'advanced_features_and_security.CustomUser'
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

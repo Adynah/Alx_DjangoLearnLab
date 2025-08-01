@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'bookshelf',
     'relationship_app'
+    'bookshelf.CustomerUser'
 ]
 
 MIDDLEWARE = [

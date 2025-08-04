@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView
 from .forms import BookForm
 from .models import Book
+from .forms import ExampleForm
 
 
 # Book list view protected by permission

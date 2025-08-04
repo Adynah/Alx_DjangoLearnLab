@@ -30,6 +30,7 @@ SECURE_SSL_REDIRECT = True #Redirect all non-HTTPS requests to HTTPS
 SECURE_HSTS_SECONDS = 31536000 #Enforce HTTPS to only access site for one year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True # Apply HSTS policy to all subdomian
 SECURE_HSTS_PRELOAD = True # Allow the site to be preloaded into browsers' HSTS list
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') #Honor the X_Forwarded_proto header for request.is_secure()
 
 SECURE_BROWSER_XSS_FILTER = True  # Enable the XSS filter in the browser
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent the browser from MIME-sniffing a response away from the declared content-type

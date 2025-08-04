@@ -6,4 +6,5 @@ urlpatterns = [
     path('add/', create_book, name='create_book'),
     path('edit/<int:pk>/', edit_book, name='edit_book'),
     path('delete/<int:pk>/', delete_book, name='delete_book'),
+    path('form-example/', example_form_view, name='form_example'),
 ]

@@ -27,7 +27,7 @@ DEBUG = False
 
 # HHTPS support
 SECURE_SSL_REDIRECT = True #Redirect all non-HTTPS requests to HTTPS
-SECURE_HSTS_SECONDS = True #Enforce HTTPS to only access site for a specific time
+SECURE_HSTS_SECONDS = 31536000 #Enforce HTTPS to only access site for one year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True # Apply HSTS policy to all subdomian
 SECURE_HSTS_PRELOAD = True # Allow the site to be preloaded into browsers' HSTS list
 

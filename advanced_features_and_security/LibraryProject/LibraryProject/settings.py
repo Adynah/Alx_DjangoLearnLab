@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(1yu*!^3ltv40b5iof&a!l!&y8nkh18-3_$pov4f&9)o^epq9y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -130,3 +130,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+SECURE_BROWSER_XSS_FILTER = True  # Enable the XSS filter in the browser
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent the browser from MIME-sniffing a response away from the declared content-type
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking by not allowing your site to be rendered in a frame
+
+CSRF_COOKIE_SECURE = True  # Ensure CSRF cookie is sent over HTTPS only
+SESSION_COOKIE_SECURE = True  # Ensure session cookie is sent over HTTPS only

@@ -6,7 +6,7 @@ from .forms import BookForm
 from .models import Book
 
 
-# Create your views here.
+# Book list view protected by permission
 class BookListView(PermissionRequiredMixin, ListView):
     model = Book
     template_name = 'bookshelf/book_list.html'
@@ -14,6 +14,7 @@ class BookListView(PermissionRequiredMixin, ListView):
     permission_required = 'bookshelf.can_view'
     raise_exception = True
 
+# Create view with form validation
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
     if request.method == 'POST':
@@ -26,6 +27,7 @@ def create_book(request):
     return render(request, 'bookshelf/book_form.html', {'form': form})
 
 
+# Edit view with permission and form validation
 @permission_required('bookshelf.can_edit', raise_exception=True)
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
@@ -36,6 +38,7 @@ def edit_book(request, pk):
     return render(request, 'bookshelf/book_form.html', {'form': form})
 
 
+# Delete view protected by permission
 @permission_required('bookshelf.can_delete', raise_exception=True)
 def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)

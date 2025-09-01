@@ -18,9 +18,9 @@ class BookListView(generics.ListAPIView):
 
      # Enable filtering, searching, and ordering
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['title', 'author', 'publicationYear']  
+    filterset_fields = ['title', 'author', 'publication_year']  
     search_fields = ['title', 'author']  
-    ordering_fields = ['title', 'publicationYear']  
+    ordering_fields = ['title', 'publication_year']  
     ordering = ['title']  # default ordering
 
 class BookDetailView(generics.RetrieveAPIView):

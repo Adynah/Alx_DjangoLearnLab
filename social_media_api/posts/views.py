@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from notifications.models import Notification
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404 as generics_get_object_or_404
 
 User = get_user_model()
 
@@ -63,10 +63,7 @@ class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        try:
-            post = get_object_or_404(Post, pk=pk)
-        except Post.DoesNotExist:
-            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+        post = generics.get_object_or_404(Post, pk=pk)
 
         like, created = Like.objects.get_or_create(user=request.user, post=post)
         if not created:
@@ -80,16 +77,14 @@ class LikePostView(APIView):
                 verb="liked your post",
                 target=post
             )
+
         return Response({"success": "Post liked."}, status=status.HTTP_201_CREATED)
 
 class UnlikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        try:
-            post = get_object_or_404(Post, pk=pk)
-        except Post.DoesNotExist:
-            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+        post = generics.get_object_or_404(Post, pk=pk)
 
         try:
             like = Like.objects.get(user=request.user, post=post)

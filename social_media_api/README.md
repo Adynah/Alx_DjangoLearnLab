@@ -252,3 +252,89 @@ Content-Type: application/json
     "updated_at": "2025-09-09T10:15:30Z"
   }
 ]
+
+## Likes & Notifications Features
+Overview
+
+The platform allows users to interact more socially by liking posts and receiving notifications for key activities such as:
+- New followers
+- Likes on their posts
+- Comments on their posts
+
+This system is built to enhance user engagement and provide a real-time interactive experience.
+
+### Models
+Like (posts app)
+- Tracks which users liked which posts.
+
+| Field        | Type       | Description                      |
+| ------------ | ---------- | -------------------------------- |
+| `user`       | ForeignKey | The user who liked the post      |
+| `post`       | ForeignKey | The post being liked             |
+| `created_at` | DateTime   | Timestamp when the like occurred |
+
+#### Notification (notifications app)
+- Stores user notifications for relevant actions.
+
+| Field       | Type               | Description                                         |
+| ----------- | ------------------ | --------------------------------------------------- |
+| `recipient` | ForeignKey to User | User receiving the notification                     |
+| `actor`     | ForeignKey to User | User performing the action                          |
+| `verb`      | CharField          | Description of the action (e.g., "liked your post") |
+| `target`    | GenericForeignKey  | Object related to the action (Post, Comment, User)  |
+| `is_read`   | BooleanField       | Whether the notification has been read              |
+| `timestamp` | DateTimeField      | Time of the action                                  |
+
+#### API Endpoints
+Likes
+| Endpoint                      | Method | Description   | Auth Required |
+| ----------------------------- | ------ | ------------- | ------------- |
+| `/api/posts/<int:pk>/like/`   | POST   | Like a post   | Yes           |
+| `/api/posts/<int:pk>/unlike/` | POST   | Remove a like | Yes           |
+
+##### Example: Like a Post
+POST /api/posts/12/like/
+Authorization: Token <user-token>
+
+
+Response:
+{
+  "success": "You liked the post."
+}
+
+| Endpoint                        | Method | Description                      | Auth Required |
+| ------------------------------- | ------ | -------------------------------- | ------------- |
+| `/api/notifications/`           | GET    | Get all notifications for a user | Yes           |
+| `/api/notifications/<id>/read/` | POST   | Mark notification as read        | Yes           |
+
+##### Example: Get Notifications
+GET /api/notifications/
+Authorization: Token <user-token>
+
+Response:
+[
+  {
+    "id": 5,
+    "actor": "alice",
+    "verb": "liked your post",
+    "target": "Post #12",
+    "is_read": false,
+    "timestamp": "2025-09-09T10:00:00Z"
+  }
+]
+
+#### How It Works
+- Like a Post: Creates a Like object and triggers a notification for the post author.
+- Unlike a Post: Removes the Like object. Optionally updates notifications.
+- New Followers: Generates a notification for the followed user.
+- Comments: Creates a notification for the post author.
+- Notifications can be filtered to show unread first.
+- Pagination is recommended for users with many notifications.
+- Users cannot like the same post multiple times.
+
+##### Example Workflow
+- Alice follows Bob → Bob gets: "Alice started following you".
+- Bob posts a photo → No notification yet.
+- Alice likes Bob’s post → Bob gets: "Alice liked your post".
+- Alice comments → Bob gets: "Alice commented on your post".
+- Bob checks notifications → Marks them as read.

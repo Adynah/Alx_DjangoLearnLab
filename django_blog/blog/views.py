@@ -21,3 +21,9 @@ def profile_view(request):
 def home_view(request):
     return render(request, "home.html")
 
+class StaticLoginView(TemplateView):
+    template_name = 'blog/static/login.html'
+
+class StaticRegisterView(TemplateView):
+    template_name = 'blog/static/register.html'
+

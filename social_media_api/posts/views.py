@@ -1,9 +1,12 @@
-from rest_framework import viewsets, permissions, filters, generics
+from rest_framework import viewsets, permissions, filters, generics, status
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import get_user_model
 from notifications.models import Notification
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -61,7 +64,7 @@ class LikePostView(APIView):
 
     def post(self, request, pk):
         try:
-            post = Post.objects.get(pk=pk)
+            post = get_object_or_404(Post, pk=pk)
         except Post.DoesNotExist:
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -84,7 +87,7 @@ class UnlikePostView(APIView):
 
     def post(self, request, pk):
         try:
-            post = Post.objects.get(pk=pk)
+            post = get_object_or_404(Post, pk=pk)
         except Post.DoesNotExist:
             return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 

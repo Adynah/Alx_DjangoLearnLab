@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404
 from .models import Post, Comment
 from .forms import CommentForm
 from django.urls import reverse_lazy
@@ -85,23 +86,39 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user == post.author
 
-def add_comment(request, post_id):
+class CommentCreateView(LoginRequiredMixin, CreateView):
     """
-    Handle creating a new comment for a specific post.
-    Only accessible to authenticated users.
+    Class-based view to allow an authenticated user to create a comment
+    for a specific blog post.
+    
+    Attributes:
+    - model: Comment model to create
+    - form_class: CommentForm (validates content)
+    - template_name: HTML template for creating a comment
     """
-    post = get_object_or_404(Post, id=post_id)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.author = request.user
-            comment.post = post
-            comment.save()
-            return redirect('post-detail', pk=post.id)
-    else:
-        form = CommentForm()
-    return render(request, 'blog/comment_form.html', {'form': form, 'post': post})
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        """
+        Automatically associate the comment with:
+        - the logged-in user as the author
+        - the related post based on post_id in the URL
+        """
+        post_id = self.kwargs.get('post_id')
+        post = get_object_or_404(Post, id=post_id)
+        form.instance.author = self.request.user
+        form.instance.post = post
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """
+        After successfully creating a comment, redirect to the
+        post detail page so the user can see their comment.
+        """
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """

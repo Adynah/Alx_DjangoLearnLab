@@ -107,7 +107,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         - the related post based on post_id in the URL
         """
         post_id = self.kwargs.get('post_id')
-        post = get_object_or_404(Post, id=post_id)
+        post = get_object_or_404(Post, id=self.kwargs.get('pk'))
         form.instance.author = self.request.user
         form.instance.post = post
         return super().form_valid(form)

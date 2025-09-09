@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView
+from .views import RegisterView, FollowUserView, UnfollowUserView, FeedView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
     path('login/', obtain_auth_token, name='login'),  # DRF built-in token login
     path('follow/<int:user_id>/', FollowUserView.as_view(), name='follow-user'),
     path('unfollow/<int:user_id>/', UnfollowUserView.as_view(), name='unfollow-user'),
+    path('feed/', FeedView.as_view(), name='feed'),
 ]

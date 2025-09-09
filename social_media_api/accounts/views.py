@@ -1,22 +1,26 @@
 from rest_framework import generics, permissions, status
-from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from .serializers import RegisterSerializer
-from .models import CustomUser
+from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
+from .serializers import RegisterSerializer
+from .models import CustomUser
+from posts.models import Post
+from posts.serializers import PostSerializer
 
 User = get_user_model()
 
-class RegisterView(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
+class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        token, created = Token.objects.get_or_create(user=self.object)
-        response.data['token'] = token.key
-        return response
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({"user": serializer.data, "token": token.key}, status=status.HTTP_201_CREATED)
+
 
 class FollowUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -33,6 +37,7 @@ class FollowUserView(APIView):
         request.user.following.add(target_user)
         return Response({"success": f"You are now following {target_user.username}."})
 
+
 class UnfollowUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -45,11 +50,11 @@ class UnfollowUserView(APIView):
         request.user.following.remove(target_user)
         return Response({"success": f"You have unfollowed {target_user.username}."})
 
-lass FeedView(generics.ListAPIView):
+
+class FeedView(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        # Get posts from users that the current user is following
         return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')

@@ -21,6 +21,14 @@ django_blog/
 │  │     ├─ register.html
 │  │     ├─ profile.html
 │  │     └─ logged_out.html
+│  ├─ static/
+│  │  ├─ css/
+│  │  │  └─ styles.css
+│  │  ├─ js/
+│  │  │  └─ scripts.js
+│  │  └─ html/
+│  │     ├─ login.html
+│  │     └─ register.html
 │  ├─ views.py
 │  ├─ urls.py
 │  └─ forms.py

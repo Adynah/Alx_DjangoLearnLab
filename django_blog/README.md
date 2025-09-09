@@ -86,3 +86,10 @@ django_blog/
 
 ### 9. Blog Post Management (CRUD)
 Authenticated users can create, edit, and delete blog posts. All users can view the list of posts and individual post details. Permissions ensure that only the author of a post can modify or delete it. CRUD operations are implemented using Django’s class-based views (ListView, DetailView, CreateView, UpdateView, DeleteView) with PostForm handling the form data.
+
+## 10. Tagging: 
+Users can add multiple tags when creating or editing a post. Tags display on post detail pages. Clicking a tag shows all posts with that tag (/tags/<tag_name>/).
+
+Search: Users can search posts by title, content, or tags. Results display on /search/?q=<query>.
+
+Integration: Both tagging and search integrate with existing post list/detail templates and respect authentication/CRUD permissions.

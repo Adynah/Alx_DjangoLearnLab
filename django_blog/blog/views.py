@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from .models import Post, Comment
 from .forms import CommentForm
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 def register_view(request):
     if request.method == "POST":
@@ -150,3 +151,39 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         # Redirect to the post detail page after deletion
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+    
+class PostSearchView(ListView):
+    """
+    View to handle searching blog posts by title, content, or tags.
+    """
+    model = Post
+    template_name = 'blog/post_search.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        """
+        Filter posts based on the search query from GET parameter 'q'.
+        """
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__name__icontains=query)
+            ).distinct()
+        return Post.objects.none()  # Return empty queryset if no search term
+
+class TagPostListView(ListView):
+    """
+    Display all posts that have a specific tag.
+    """
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        """
+        Filter posts based on the tag name from the URL.
+        """
+        tag_name = self.kwargs.get('tag_name')
+        return Post.objects.filter(tags__name__iexact=tag_name)

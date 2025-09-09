@@ -11,6 +11,7 @@ from posts.serializers import PostSerializer
 User = get_user_model()
 
 class RegisterView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 

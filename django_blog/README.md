@@ -83,3 +83,6 @@ django_blog/
 - Access /profile/ and ensure user info is displayed and editable.
 - Try accessing /admin/ with a regular user → should redirect to login.
 - Log in as superuser → /admin/ should be accessible.
+
+### 9. Blog Post Management (CRUD)
+Authenticated users can create, edit, and delete blog posts. All users can view the list of posts and individual post details. Permissions ensure that only the author of a post can modify or delete it. CRUD operations are implemented using Django’s class-based views (ListView, DetailView, CreateView, UpdateView, DeleteView) with PostForm handling the form data.

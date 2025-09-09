@@ -1,15 +1,53 @@
 {% extends "blog/base.html" %}
-{% block title %}All Posts{% endblock %}
+{% block title %}
+    {% if action == 'list' %}All Posts{% elif action == 'detail' %}{{ post.title }}{% elif action == 'create' %}Create Post{% elif action == 'update' %}Edit Post{% elif action == 'delete' %}Delete Post{% endif %}
+{% endblock %}
 
 {% block content %}
-<h2>All Blog Posts</h2>
-{% for post in posts %}
-    <div>
-        <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
-        <p>{{ post.content|truncatechars:100 }}</p>
-        <p>By {{ post.author }} on {{ post.published_date }}</p>
-    </div>
-{% empty %}
-    <p>No posts yet.</p>
-{% endfor %}
+<h2>
+    {% if action == 'list' %}All Posts{% elif action == 'detail' %}{{ post.title }}{% elif action == 'create' %}Create Post{% elif action == 'update' %}Edit Post{% elif action == 'delete' %}Delete Post{% endif %}
+</h2>
+
+<!-- Post List -->
+{% if action == 'list' %}
+    <ul>
+        {% for post in posts %}
+            <li><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></li>
+        {% empty %}
+            <li>No posts available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'post_create' %}">Create New Post</a>
+{% endif %}
+
+<!-- Post Detail -->
+{% if action == 'detail' %}
+    <p>{{ post.content }}</p>
+    <p>By {{ post.author.username }} on {{ post.published_date }}</p>
+    {% if user.is_authenticated and user == post.author %}
+        <a href="{% url 'post_update' post.pk %}">Edit</a>
+        <a href="{% url 'post_delete' post.pk %}">Delete</a>
+    {% endif %}
+{% endif %}
+
+<!-- Post Form (Create/Update) -->
+{% if action == 'create' or action == 'update' %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">
+            {% if action == 'create' %}Create{% else %}Update{% endif %}
+        </button>
+    </form>
+{% endif %}
+
+<!-- Delete Confirmation -->
+{% if action == 'delete' %}
+    <p>Are you sure you want to delete "{{ post.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+        <a href="{% url 'post_detail' post.pk %}">Cancel</a>
+    </form>
+{% endif %}
 {% endblock %}

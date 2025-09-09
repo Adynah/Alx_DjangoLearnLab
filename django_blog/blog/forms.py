@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Post
 from .models import Comment
+from taggit.forms import TagWidget
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)    # Extend UserCreationForm to include email
@@ -14,10 +15,12 @@ class PostForm(forms.ModelForm):
     """
     Form for creating and updating blog posts.
     Includes a field for adding or editing tags.
+    Uses TagWidget for proper tag input handling.
     """
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']
+        widgets = {'tags': TagWidget(),}
 
 class CommentForm(forms.ModelForm):
     """

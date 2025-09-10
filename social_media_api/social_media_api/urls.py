@@ -16,12 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
+
+schema_view = get_schema_view(
+    title="Social Media API",
+    description="API documentation for the Social Media project",
+    version="1.0.0"
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
     path('api/', include('posts.urls')),
     path('api/notifications/', include('notifications.urls')),
-    path('', include_docs_urls(title="Social Media API")), 
+
+    # DRF login/logout
+    path("api-auth/", include("rest_framework.urls")),
+
+    # API Docs
+    path("schema/", schema_view, name="api-schema"),
 ]

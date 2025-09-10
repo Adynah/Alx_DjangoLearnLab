@@ -26,10 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-for-local')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['adina-social-media-api.onrender.com']
+ALLOWED_HOSTS = ['adina-social-media-api.onrender.com', 'localhost', '127.0.0.1']
 
+PORT = os.environ.get("PORT", "8000")
 
 # Application definition
 
@@ -142,3 +143,15 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_SSL_REDIRECT = True
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",  # you can tighten later
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
+
